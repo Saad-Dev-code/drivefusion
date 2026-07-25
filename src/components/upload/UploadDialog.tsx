@@ -121,8 +121,8 @@ export default function UploadDialog() {
 
       {/* Upload Progress Sheet */}
       {isOpen && queue.length > 0 && (
-        <div className="fixed bottom-6 right-6 w-[380px] z-[60] transition-all duration-300">
-          <div className="bg-white/85 backdrop-blur-xl rounded-2xl premium-shadow p-5 border border-white/60">
+        <div className="fixed bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:w-[380px] z-[60] transition-all duration-300">
+          <div className="bg-surface/85 backdrop-blur-xl rounded-2xl premium-shadow p-5 border border-outline-variant/20">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-2">

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { analyzeStorage, explainStorage } from '@/lib/ai/groq'
+import { formatBytes } from '@/lib/utils/formatting'
 
 export async function GET() {
   try {
@@ -39,21 +40,23 @@ export async function GET() {
     }
 
     const stats = {
-      totalSize,
+      totalSize: formatBytes(totalSize),
       fileCount: files.length,
-      byType,
+      byType: Object.fromEntries(
+        Object.entries(byType).map(([type, data]) => [type, { count: data.count, size: formatBytes(data.size) }])
+      ),
       accounts: accounts.map(a => ({
         email: a.google_email,
-        used: Number(a.used_storage),
-        total: Number(a.total_storage),
+        used: formatBytes(Number(a.used_storage)),
+        total: formatBytes(Number(a.total_storage)),
       })),
     }
 
     const groqInsights = await analyzeStorage(stats)
     const explanation = await explainStorage(
-      totalSize,
-      totalSize * 0.92,
-      accounts.map(a => ({ email: a.google_email, used: Number(a.used_storage) }))
+      formatBytes(totalSize),
+      formatBytes(totalSize * 0.92),
+      accounts.map(a => ({ email: a.google_email, used: formatBytes(Number(a.used_storage)) }))
     )
 
     return NextResponse.json({

@@ -5,13 +5,21 @@ import { useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import type { UploadQueueItem } from '@/types'
 
+const generateId = () => {
+  if (typeof crypto?.randomUUID === 'function') return crypto.randomUUID()
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16)
+  })
+}
+
 export function useUpload() {
   const [queue, setQueue] = useState<UploadQueueItem[]>([])
   const queryClient = useQueryClient()
   const supabase = createClient()
 
   const uploadFile = useCallback(async (file: File, virtualFolderId?: string) => {
-    const id = crypto.randomUUID()
+    const id = generateId()
     const item: UploadQueueItem = { id, file, progress: 0, status: 'pending' }
     setQueue(prev => [...prev, item])
 

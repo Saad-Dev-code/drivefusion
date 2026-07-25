@@ -24,11 +24,16 @@ export function useStorage() {
         .order('size', { ascending: false })
         .limit(20)
 
+      const { data: allFileSizes } = await supabase
+        .from('files')
+        .select('size')
+        .eq('user_id', user.id)
+
       if (!accounts) return { accounts: [], largest_files: [], total_storage: 0, used_storage: 0, available_storage: 0 }
 
       const total_storage = accounts.reduce((s, a) => s + Number(a.total_storage), 0)
-      const used_storage = accounts.reduce((s, a) => s + Number(a.used_storage), 0)
-      const available_storage = accounts.reduce((s, a) => s + Number(a.available_storage), 0)
+      const used_storage = (allFileSizes || []).reduce((s, f) => s + Number(f.size), 0)
+      const available_storage = total_storage - used_storage
 
       return { accounts, total_storage, used_storage, available_storage, largest_files: files || [] }
     },

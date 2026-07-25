@@ -26,7 +26,7 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="font-headline text-headline font-bold text-primary">Drive Fusion</h1>
-          <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Premium Storage</p>
+          <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Infinity Workspace</p>
         </div>
       </div>
 

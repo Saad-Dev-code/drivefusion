@@ -56,6 +56,7 @@ export default function DashboardPage() {
               </svg>
               <div className="text-center">
                 <p className="text-large-title font-black text-on-surface">{usedPercent}%</p>
+                <p className="text-body font-semibold text-primary">{storage ? formatBytes(storage.used_storage) : '---'}</p>
                 <p className="text-label text-on-surface-variant">UTILIZED</p>
               </div>
             </div>

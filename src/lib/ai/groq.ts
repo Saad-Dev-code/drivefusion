@@ -59,10 +59,10 @@ export async function detectDuplicates(
 }
 
 export async function analyzeStorage(stats: {
-  totalSize: number
+  totalSize: number | string
   fileCount: number
-  byType: Record<string, { count: number; size: number }>
-  accounts: { email: string; used: number; total: number }[]
+  byType: Record<string, { count: number; size: number | string }>
+  accounts: { email: string; used: number | string; total: number | string }[]
 }): Promise<{ insights: { type: string; title: string; description: string }[] }> {
   const result = await groqRequest(
     'You analyze cloud storage data and provide actionable insights. Return JSON format: { "insights": [{ "type": "storage|duplicate|organization", "title": string, "description": string }] }',
@@ -72,9 +72,9 @@ export async function analyzeStorage(stats: {
 }
 
 export async function explainStorage(
-  current: number,
-  previous: number,
-  accounts: { email: string; used: number }[]
+  current: number | string,
+  previous: number | string,
+  accounts: { email: string; used: number | string }[]
 ): Promise<{ explanation: string; recommendation: string }> {
   const result = await groqRequest(
     'You explain storage changes in simple, actionable language. Return JSON: { "explanation": string, "recommendation": string }',
