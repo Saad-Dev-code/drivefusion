@@ -30,6 +30,8 @@ export interface FileRecord {
   size: number
   virtual_folder_id: string | null
   ai_summary: string | null
+  starred: boolean
+  deleted_at: string | null
   created_at: string
   updated_at: string
   tags?: AiTag[]

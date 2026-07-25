@@ -96,6 +96,13 @@ export async function POST(request: Request) {
           existingFiles.map(f => ({ filename: f.filename, size: Number(f.size) }))
         )
         results.duplicate_check = duplicateResult
+
+        if (duplicateResult.is_duplicate && duplicateResult.confidence > 0.5) {
+          await supabase.from('ai_tags').insert({
+            file_id: file.id,
+            tag: 'duplicate',
+          })
+        }
       }
     } catch (e) {
       results.duplicate_error = (e as Error).message

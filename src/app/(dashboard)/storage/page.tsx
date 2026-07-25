@@ -116,8 +116,13 @@ export default function StoragePage() {
                   </div>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setRefreshingId(account.id)
+                        await fetch('/api/storage/sync', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ accountId: account.id }),
+                        })
                         queryClient.invalidateQueries({ queryKey: ['storage'] })
                         queryClient.invalidateQueries({ queryKey: ['google_accounts'] })
                         setTimeout(() => setRefreshingId(null), 1000)

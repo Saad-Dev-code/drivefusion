@@ -1,33 +1,50 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { data: folders, error } = await supabase
+    const { searchParams } = new URL(request.url)
+    const parentId = searchParams.get('parent_id')
+    const all = searchParams.get('all') === 'true'
+
+    let query = supabase
       .from('virtual_folders')
       .select('*')
       .eq('user_id', user.id)
-      .is('parent_id', null)
       .order('name')
 
+    if (all) {
+      // Return ALL folders as flat list (for folder picker)
+    } else if (parentId === 'null') {
+      query = query.is('parent_id', null)
+    } else if (parentId) {
+      query = query.eq('parent_id', parentId)
+    } else {
+      query = query.is('parent_id', null)
+    }
+
+    const { data: folders, error } = await query
     if (error) throw error
 
-    const foldersWithChildren = await Promise.all(
-      (folders || []).map(async (folder) => {
-        const { data: children } = await supabase
-          .from('virtual_folders')
-          .select('*')
-          .eq('parent_id', folder.id)
-          .order('name')
-        return { ...folder, children: children || [] }
-      })
-    )
+    if (!all && !parentId) {
+      const foldersWithChildren = await Promise.all(
+        (folders || []).map(async (folder) => {
+          const { data: children } = await supabase
+            .from('virtual_folders')
+            .select('*')
+            .eq('parent_id', folder.id)
+            .order('name')
+          return { ...folder, children: children || [] }
+        })
+      )
+      return NextResponse.json({ folders: foldersWithChildren })
+    }
 
-    return NextResponse.json({ folders: foldersWithChildren })
+    return NextResponse.json({ folders: folders || [] })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch folders' }, { status: 500 })
   }

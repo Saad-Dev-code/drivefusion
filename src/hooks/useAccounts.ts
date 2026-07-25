@@ -30,6 +30,22 @@ export function useDisconnectAccount() {
 
   return useMutation({
     mutationFn: async (accountId: string) => {
+      const { data: account } = await supabase
+        .from('google_accounts')
+        .select('refresh_token')
+        .eq('id', accountId)
+        .single()
+
+      if (account?.refresh_token) {
+        try {
+          const { decrypt } = await import('@/lib/utils/encryption')
+          const token = decrypt(account.refresh_token)
+          await fetch(`https://oauth2.googleapis.com/revoke?token=${token}`, { method: 'POST' })
+        } catch {
+          // Revocation failure is non-critical
+        }
+      }
+
       const { error } = await supabase.from('google_accounts').delete().eq('id', accountId)
       if (error) throw error
     },

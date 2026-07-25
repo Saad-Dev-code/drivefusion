@@ -83,6 +83,16 @@ export async function explainStorage(
   return result
 }
 
+export async function findSimilarDuplicates(
+  files: { id: string; filename: string; size: number }[]
+): Promise<{ groups: { reason: string; file_ids: string[] }[] }> {
+  const result = await groqRequest(
+    'You analyze a list of files and detect potential duplicates that have different filenames but similar content (e.g., "photo(1).jpg" vs "IMG_001.jpg", "report-final.pdf" vs "report_v2.pdf"). Group files that are likely the same content. Return JSON: { "groups": [{ "reason": string explaining the similarity, "file_ids": string[] of file IDs that are duplicates }] }',
+    `Files: ${JSON.stringify(files)}`
+  )
+  return result
+}
+
 export async function suggestFolderGroups(
   files: { filename: string; mimeType: string; id: string }[]
 ): Promise<{ suggestions: { folder_name: string; file_ids: string[]; reason: string }[] }> {

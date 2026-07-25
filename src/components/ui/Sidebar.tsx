@@ -7,6 +7,8 @@ const navItems = [
   { href: '/dashboard', icon: 'home', label: 'Home' },
   { href: '/files', icon: 'folder_open', label: 'My Files' },
   { href: '/recent', icon: 'schedule', label: 'Recent' },
+  { href: '/favorites', icon: 'star', label: 'Favorites' },
+  { href: '/trash', icon: 'delete', label: 'Trash' },
 ]
 
 const systemItems = [

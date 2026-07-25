@@ -1,12 +1,14 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 import { useThemeMode } from '@/theme/ThemeProvider'
 import { Avatar } from '@/components/ui/avatar'
 import { createClient } from '@/lib/supabase/client'
 
 export default function SettingsPage() {
+  const router = useRouter()
   const { user } = useUser()
   const { mode, toggleMode } = useThemeMode()
   const [name, setName] = useState(user?.user_metadata?.full_name || '')
@@ -15,8 +17,15 @@ export default function SettingsPage() {
   const [uploading, setUploading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [uploadError, setUploadError] = useState('')
+  const [signingOut, setSigningOut] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const supabase = createClient()
+
+  const handleSignOut = async () => {
+    setSigningOut(true)
+    await supabase.auth.signOut()
+    router.push('/')
+  }
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -156,6 +165,19 @@ export default function SettingsPage() {
               <span>{mode === 'light' ? 'Light' : 'Dark'}</span>
             </button>
           </div>
+        </div>
+
+        {/* Sign Out */}
+        <div className="bg-surface-container-lowest p-8 rounded-[24px] premium-shadow border border-error/10">
+          <h3 className="text-headline font-semibold text-on-surface mb-2">Sign Out</h3>
+          <p className="text-body-sm text-on-surface-variant mb-6">Sign out of your Drive Fusion account</p>
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="px-8 py-3 bg-error text-on-error rounded-[16px] font-semibold hover:opacity-90 active:scale-95 transition-all disabled:opacity-50"
+          >
+            {signingOut ? 'Signing out...' : 'Sign Out'}
+          </button>
         </div>
       </div>
     </div>
