@@ -55,6 +55,11 @@
   --font-page-title: Inter, sans-serif;
   --font-large-title: Inter, sans-serif;
 
+  --text-large-title: 48px;
+  --text-headline: 24px;
+  --text-body: 16px;
+  --text-label: 12px;
+
   --radius-card: 24px;
   --radius-input: 18px;
   --radius-button: 16px;

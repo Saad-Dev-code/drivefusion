@@ -23,8 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true)
     const stored = localStorage.getItem('drivefusion-theme') as ThemeMode | null
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    const initial = stored || (prefersDark ? 'dark' : 'light')
+    const initial = stored || 'light'
     setMode(initial)
     document.documentElement.classList.toggle('dark', initial === 'dark')
   }, [])
