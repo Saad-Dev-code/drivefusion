@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/theme/ThemeProvider'
 import QueryProvider from '@/components/QueryProvider'
 import './globals.css'
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <QueryProvider>
           <ThemeProvider>{children}</ThemeProvider>
         </QueryProvider>
+        <Analytics />
       </body>
     </html>
   )
